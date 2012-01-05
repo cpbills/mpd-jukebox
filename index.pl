@@ -94,9 +94,9 @@ sub authenticated_page {
     my $album_hash  = Jukebox::get_information('album','albums');
     my $artist_hash = Jukebox::get_information('artist','artists');
 
-    my $genres  = &make_html_list($genre_hash,'genre');
-    my $albums  = &make_html_list($album_hash,'album');
-    my $artists = &make_html_list($artist_hash,'artist');
+    my $genres  = make_html_list($genre_hash,'genre');
+    my $albums  = make_html_list($album_hash,'album');
+    my $artists = make_html_list($artist_hash,'artist');
 
     my $genres_link = qq{<a href="javascript:field('genres');">genres</a>};
     my $albums_link = qq{<a href="javascript:field('albums');">albums</a>};
@@ -112,7 +112,7 @@ sub authenticated_page {
 
     my $main_text = '';
     if (param('action')) {
-        $main_text = &process_action(param('action'),$current_song,\@playlist);
+        $main_text = process_action(param('action'),$current_song,\@playlist);
         unless ($main_text and $main_text ne '') {
             # redirect to the main page if there was no result
             print $session->header(-location=>'index.pl');

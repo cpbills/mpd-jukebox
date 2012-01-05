@@ -103,7 +103,7 @@ sub search_songs {
 sub search_music {
     my $query   = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
 
     my @songs = ();
 
@@ -140,7 +140,7 @@ sub search_music {
 sub get_songs_by_year {
     my $year    = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     $year = $dbh->quote($year);
     my $select = qq{ select * from songs where date=$year };
     my $songs = $dbh->selectall_hashref($select,'song_id');
@@ -153,7 +153,7 @@ sub get_songs_from_other {
 
     return unless ($type =~ /(genre|album|artist)/);
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     $id = $dbh->quote($id);
     my $select = qq[ select * from songs where ${type}_id=$id ];
     my $songs_ref = $dbh->selectall_hashref($select,'song_id');
@@ -172,7 +172,7 @@ sub get_songs_from_other {
 }
 
 sub get_all_song_info {
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     my $select = qq{ select * from songs };
     my $songs = $dbh->selectall_hashref($select,'song_id');
     $dbh->disconnect;
@@ -184,7 +184,7 @@ sub convert_playlist {
 
     my %songs = ();
     foreach my $song (@$playlist) {
-        my $song_hash = &get_song_by_file($$song{file});
+        my $song_hash = get_song_by_file($$song{file});
         $songs{$$song_hash{song_id}} = $song_hash;
     }
     return \%songs;
@@ -193,7 +193,7 @@ sub convert_playlist {
 sub get_song_by_id {
     my $song_id = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     $song_id = $dbh->quote($song_id);
     my $select = qq{ select * from songs where song_id=$song_id };
     my $song_hash = $dbh->selectrow_hashref($select);
@@ -204,7 +204,7 @@ sub get_song_by_id {
 sub get_song_by_file {
     my $file = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     $file = $dbh->quote($file);
     my $select = qq{ select * from songs where file=$file };
     my $song_hash = $dbh->selectrow_hashref($select);
@@ -216,7 +216,7 @@ sub get_name_by_id {
     my $type    = shift;
     my $id      = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     my $select = qq[ select $type from ${type}s where ${type}_id=$id ];
     my ($name) = $dbh->selectrow_array($select);
     $dbh->disconnect;
@@ -230,7 +230,7 @@ sub get_information {
     # this causes duplicate data, hopefully memory doesn't become an issue
     # if it does... this could be a small memory extravagance.
     my $keyid = "${key}_id";
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     my $select = qq{ select *,$keyid as id from $table };
     my $hashref = $dbh->selectall_hashref($select,$key);
     $dbh->disconnect;
@@ -238,7 +238,7 @@ sub get_information {
 }
 
 sub get_dates {
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     my $select = qq{ select distinct date from songs
                         where date != 0 order by date };
     my $years = $dbh->selectcol_arrayref($select);
@@ -249,7 +249,7 @@ sub get_dates {
 sub get_file_from_id {
     my $song_id = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     $song_id = $dbh->quote($song_id);
     my $select = qq{ select file from songs where song_id=$song_id };
     my ($file) = $dbh->selectrow_array($select);
@@ -275,7 +275,7 @@ sub rm_song {
 sub add_song {
     my $file = shift;
 
-    my $mpd = &mpd_connect();
+    my $mpd = mpd_connect();
     $mpd->playlist->add("$file");
     $mpd->play;
     # enable consume mode; track is removed from playlist after playing
@@ -321,12 +321,12 @@ sub html_playlist {
 
     my @links = ();
 
-    my $mpd = &mpd_connect();
+    my $mpd = mpd_connect();
     my @playlist = $mpd->playlist->as_items;
 
     foreach my $song (@playlist) {
-        my $song_hash = &get_song_by_file($$song{file});
-        push @links, &linkify_song($song_hash,$script);
+        my $song_hash = get_song_by_file($$song{file});
+        push @links, linkify_song($song_hash,$script);
     }
     return join('',@links);
 }
@@ -340,7 +340,7 @@ sub html_songs_list {
 
     foreach my $song_id (keys %$songs) {
         my $song = $$songs{$song_id};
-        push @links, &linkify_song($song,$script);
+        push @links, linkify_song($song,$script);
     }
     return join('',@links);
 }
@@ -349,7 +349,7 @@ sub linkify_song {
     my $song    = shift;
     my $script  = shift;
 
-    my $dbh = &db_connect();
+    my $dbh = db_connect();
     my $select = "select artist from artists where artist_id=$$song{artist_id}";
     my ($artist) = $dbh->selectrow_array($select);
     $dbh->disconnect;
