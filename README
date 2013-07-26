@@ -1,4 +1,22 @@
-So... this is a steaming pile of feces at this point...
+Back-story:
+
+This was a project thrown together in about 3 days while I was at Meebo.
+We had a 'hackweek' or something, I can't even remember what it was
+called. We were given about 3 days to work on a project of our own creation
+and then asked to present our results. It was optional, and this is what I
+came up with.
+
+The plan was to have a central host you could log into on the intra-net and
+listen to streaming music from a playlist that was contributed to by your
+co-workers, and the plan was to enable voting on songs, to remove or move
+them throughout the playlist.
+
+It's functional, as is, but barely, and really needs some polish. Since
+there wasn't much interest in it during the presentation, I kind of moth-
+balled it, and I don't have a personal use for it, so it has kind of just
+been sitting here.
+
+--
 
 very basic operation at the moment, allows adding and removing of songs from
 the playlist...
